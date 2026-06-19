@@ -17,7 +17,7 @@ let configPromise: Promise<AppConfig> | null = null
  * Priority:
  * 1. Runtime config from API server (/api/config endpoint)
  * 2. Environment variable (NEXT_PUBLIC_API_URL)
- * 3. Default fallback (http://localhost:5055)
+ * 3. Default fallback (http://localhost:25055)
  */
 export async function getApiUrl(): Promise<string> {
   // If we already have config, return it

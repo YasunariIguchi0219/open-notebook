@@ -8,7 +8,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en-US',
+    fallbackLng: 'ja-JP',
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
@@ -16,7 +16,10 @@ i18n
       useSuspense: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // Default to Japanese (fallbackLng) when no saved preference exists.
+      // Browser-language ('navigator') detection is intentionally omitted so the
+      // app starts in Japanese; users can still switch and the choice persists.
+      order: ['localStorage'],
       caches: ['localStorage'],
     },
   })

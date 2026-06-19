@@ -3,7 +3,7 @@
 # This prevents the "Unable to Connect to API Server" error during startup
 # POSIX-compliant so it runs with /bin/sh (dash) in slim images
 
-API_URL="${INTERNAL_API_URL:-http://localhost:5055}"
+API_URL="${INTERNAL_API_URL:-http://localhost:25055}"
 MAX_RETRIES=60
 RETRY_INTERVAL=5
 i=0

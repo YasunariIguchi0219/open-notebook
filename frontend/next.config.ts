@@ -13,13 +13,13 @@ const nextConfig: NextConfig = {
   } as NextConfig['experimental'],
 
   // API Rewrites: Proxy /api/* requests to FastAPI backend
-  // This simplifies reverse proxy configuration - users only need to proxy to port 8502
-  // Next.js handles internal routing to the API backend on port 5055
+  // This simplifies reverse proxy configuration - users only need to proxy to port 8073
+  // Next.js handles internal routing to the API backend on port 25055
   async rewrites() {
     // INTERNAL_API_URL: Where Next.js server-side should proxy API requests
-    // Default: http://localhost:5055 (single-container deployment)
-    // Override for multi-container: INTERNAL_API_URL=http://api-service:5055
-    const internalApiUrl = process.env.INTERNAL_API_URL || 'http://localhost:5055'
+    // Default: http://localhost:25055 (single-container deployment)
+    // Override for multi-container: INTERNAL_API_URL=http://api-service:25055
+    const internalApiUrl = process.env.INTERNAL_API_URL || 'http://localhost:25055'
 
     console.log(`[Next.js Rewrites] Proxying /api/* to ${internalApiUrl}/api/*`)
 

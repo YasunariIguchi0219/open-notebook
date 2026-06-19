@@ -14,7 +14,7 @@ class APIClient:
     """Client for Open Notebook API."""
 
     def __init__(self, base_url: Optional[str] = None):
-        self.base_url = base_url or os.getenv("API_BASE_URL", "http://127.0.0.1:5055")
+        self.base_url = base_url or os.getenv("API_BASE_URL", "http://127.0.0.1:25055")
         # Timeout increased to 5 minutes (300s) to accommodate slow LLM operations
         # (transformations, insights) on slower hardware (Ollama, LM Studio, remote APIs)
         # Configurable via API_CLIENT_TIMEOUT environment variable (in seconds)
