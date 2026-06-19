@@ -68,6 +68,11 @@ async def content_process(state: SourceState) -> dict:
             if stt_model:
                 content_state["audio_provider"] = stt_model.provider
                 content_state["audio_model"] = stt_model.name
+                # content-core/esperanto reads provider keys from env vars, so
+                # provision them from the stored credential before extraction.
+                from open_notebook.ai.key_provider import provision_provider_keys
+
+                await provision_provider_keys(stt_model.provider)
                 logger.debug(
                     f"Using speech-to-text model: {stt_model.provider}/{stt_model.name}"
                 )

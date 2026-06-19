@@ -176,11 +176,13 @@ function CredentialFormDialog({
   const isVertex = provider === 'vertex'
   const isOllama = provider === 'ollama'
   const isOpenAICompatible = provider === 'openai_compatible'
+  const isAzure = provider === 'azure'
   const requiresApiKey = !isVertex && !isOllama && !isOpenAICompatible
 
   const [name, setName] = useState('')
   const [apiKey, setApiKey] = useState('')
   const [baseUrl, setBaseUrl] = useState('')
+  const [apiVersion, setApiVersion] = useState('')
   const [showApiKey, setShowApiKey] = useState(false)
   const [project, setProject] = useState('')
   const [location, setLocation] = useState('')
@@ -193,6 +195,7 @@ function CredentialFormDialog({
     if (credential) {
       setName(credential.name || '')
       setBaseUrl(credential.base_url || '')
+      setApiVersion(credential.api_version || '')
       setApiKey('')
       setProject(credential.project || '')
       setLocation(credential.location || '')
@@ -202,6 +205,7 @@ function CredentialFormDialog({
     } else {
       setName('')
       setBaseUrl('')
+      setApiVersion('')
       setApiKey('')
       setProject('')
       setLocation('')
@@ -223,6 +227,7 @@ function CredentialFormDialog({
       if (name !== credential.name) data.name = name
       if (apiKey.trim()) data.api_key = apiKey.trim()
       if (baseUrl !== (credential.base_url || '')) data.base_url = baseUrl || undefined
+      if (isAzure && apiVersion !== (credential.api_version || '')) data.api_version = apiVersion.trim() || undefined
       if (JSON.stringify(modalities) !== JSON.stringify(credential.modalities)) data.modalities = modalities
       if (isVertex) {
         if (project !== (credential.project || '')) data.project = project.trim() || undefined
@@ -241,6 +246,9 @@ function CredentialFormDialog({
         modalities,
         api_key: apiKey.trim() || undefined,
         base_url: baseUrl || undefined,
+      }
+      if (isAzure && apiVersion.trim()) {
+        data.api_version = apiVersion.trim()
       }
       if (isVertex) {
         data.project = project.trim() || undefined
@@ -377,6 +385,28 @@ function CredentialFormDialog({
                 disabled={isSubmitting}
               />
               <p className="text-xs text-muted-foreground">{t('apiKeys.baseUrlOverrideHint')}</p>
+            </div>
+          )}
+
+          {/* API Version (Azure only) */}
+          {isAzure && (
+            <div className="space-y-2">
+              <Label htmlFor="api-version" className="text-muted-foreground">
+                API Version
+                <span className="text-muted-foreground font-normal ml-1">({t('common.optional')})</span>
+              </Label>
+              <input
+                id="api-version"
+                type="text"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={apiVersion}
+                onChange={(e) => setApiVersion(e.target.value)}
+                placeholder="2025-03-01-preview"
+                disabled={isSubmitting}
+              />
+              <p className="text-xs text-muted-foreground">
+                Azure OpenAI api-version (e.g. 2025-03-01-preview). Required for Azure chat / transcription / embeddings.
+              </p>
             </div>
           )}
 
