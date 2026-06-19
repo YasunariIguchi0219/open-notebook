@@ -1,10 +1,16 @@
+# Project name is configurable so multiple people can run this on one host
+# without clashing. Set COMPOSE_PROJECT_NAME in your .env (e.g. open-notebook-yiguchi).
+name: ${COMPOSE_PROJECT_NAME:-open-notebook}
+
 services:
   surrealdb:
     image: surrealdb/surrealdb:v2
+    # Container-internal port is fixed (25000). Only the published host port is configurable.
     command: start --bind 0.0.0.0:25000 --log info --user root --pass root rocksdb:/mydata/mydatabase.db
     user: root  # Required for bind mounts on Linux
     ports:
-      - "25000:25000"
+      # Host port via SURREAL_PORT in .env (default 25000) -> fixed container port 25000
+      - "${SURREAL_PORT:-25000}:25000"
     volumes:
       - ./surreal_data:/mydata
     environment:
@@ -17,14 +23,15 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8073:8073"  # Web UI
-      - "25055:25055"  # REST API
+      # Host ports via .env (defaults 8073 / 25055) -> fixed container ports 8073 / 25055
+      - "${OPEN_NOTEBOOK_UI_PORT:-8073}:8073"    # Web UI
+      - "${OPEN_NOTEBOOK_API_PORT:-25055}:25055"  # REST API
     environment:
-      # REQUIRED: Change this to your own secret string
-      # This encrypts your API keys in the database
-      - OPEN_NOTEBOOK_ENCRYPTION_KEY=change-me-to-a-secret-string
+      # REQUIRED: Set OPEN_NOTEBOOK_ENCRYPTION_KEY in your .env to your own secret string.
+      # This encrypts your API keys in the database.
+      - OPEN_NOTEBOOK_ENCRYPTION_KEY=${OPEN_NOTEBOOK_ENCRYPTION_KEY:-change-me-to-a-secret-string}
 
-      # Database connection (default values - no need to change)
+      # Database connection (internal docker network - fixed container port, no need to change)
       - SURREAL_URL=ws://surrealdb:25000/rpc
       - SURREAL_USER=root
       - SURREAL_PASSWORD=root
